@@ -68,24 +68,30 @@ namespace Lexer
         public override bool Parse()
         {
             NextCh();
-            if (currentCh == '+' || currentCh == '-')
-            {
-                NextCh();
-            }
-        
-            if (char.IsDigit(currentCh))
-            {
-                NextCh();
-            }
-            else
-            {
-                Error();
-            }
+			int index = 1, value = 0;
+			if (currentCh == '+') {
+				index = 1;
+				NextCh();
+			}
+			if (char.IsDigit(currentCh))
+			{
+				index = 1;
+			}
+			if (currentCh == '-') {
+				index = -1;
+				NextCh();
+			}
 
-            while (char.IsDigit(currentCh))
+			if (!char.IsDigit(currentCh))
+			{
+				Error();
+			}
+			while (char.IsDigit(currentCh))
             {
-                NextCh();
+				value = value * 10 + int.Parse(currentCh.ToString());
+				NextCh();
             }
+			parseResult = value * index;
 
 
             if (currentCharValue != -1)
@@ -151,8 +157,19 @@ namespace Lexer
 
         public override bool Parse()
         {
-            throw new NotImplementedException();
-        }
+			bool isCorrect = true, 
+				statement = true;
+			NextCh();
+			while (isCorrect && currentCharValue != -1)
+			{
+				isCorrect = statement ? char.IsLetter(currentCh) : char.IsDigit(currentCh);
+				statement = !statement;
+				NextCh();
+			}
+			if (!isCorrect)
+				Error();
+			return isCorrect;
+		}
        
     }
 
@@ -319,17 +336,19 @@ namespace Lexer
     {
         public static void Main()
         {
-            string input = "154216";
+            string input = "19023";
             Lexer L = new IntLexer(input);
-            try
+			try
             {
-                L.Parse();
-            }
+                System.Console.WriteLine(L.Parse());
+				System.Console.ReadLine();
+			}
             catch (LexerException e)
             {
                 System.Console.WriteLine(e.Message);
-            }
+				System.Console.ReadLine();
+			}
 
-        }
+		}
     }
 }
