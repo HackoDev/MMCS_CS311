@@ -67,18 +67,15 @@ namespace Lexer
 
         public override bool Parse()
         {
-            NextCh();
+			bool isNegative = false;
+
+			NextCh();
 			int index = 1, value = 0;
-			if (currentCh == '+') {
-				index = 1;
-				NextCh();
-			}
-			if (char.IsDigit(currentCh))
-			{
-				index = 1;
-			}
-			if (currentCh == '-') {
-				index = -1;
+			if (currentCh == '+' || currentCh == '-') {
+				if (currentCh == '-')
+				{
+					isNegative = true;
+				}
 				NextCh();
 			}
 
@@ -91,7 +88,12 @@ namespace Lexer
 				value = value * 10 + int.Parse(currentCh.ToString());
 				NextCh();
             }
-			parseResult = value * index;
+
+			if (isNegative)
+			{
+				value *= -1;
+			}
+			parseResult = value;
 
 
             if (currentCharValue != -1)
