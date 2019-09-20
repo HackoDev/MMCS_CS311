@@ -70,7 +70,7 @@ namespace Lexer
 			bool isNegative = false;
 
 			NextCh();
-			int index = 1, value = 0;
+			int value = 0;
 			if (currentCh == '+' || currentCh == '-') {
 				if (currentCh == '-')
 				{

@@ -59,7 +59,6 @@ namespace SimpleLexer
 
      public class Lexer
     {
-        private int position;
         private char currentCh;                      // Текущий символ
         public int LexRow, LexCol;                  // Строка-столбец начала лексемы. Конец лексемы = LexCol+LexText.Length
         private int row, col;                        // текущие строка и столбец в файле
@@ -100,6 +99,14 @@ namespace SimpleLexer
             keywordsMap["begin"] = Tok.BEGIN;
             keywordsMap["end"] = Tok.END;
             keywordsMap["cycle"] = Tok.CYCLE;
+            keywordsMap["div"] = Tok.DIV;
+            keywordsMap["mod"] = Tok.MOD;
+            keywordsMap["and"] = Tok.AND;
+            keywordsMap["or"] = Tok.OR;
+            keywordsMap["not"] = Tok.NOT;
+            keywordsMap["notmod"] = Tok.ID;
+            keywordsMap["anddiv"] = Tok.ID;
+            keywordsMap["modor"] = Tok.ID;
         }
 
         public string FinishCurrentLine()
@@ -188,14 +195,55 @@ namespace SimpleLexer
                     LexKind = Tok.ID;
                 }
             }
-            else if (char.IsDigit(currentCh))
+            else if (currentCh == '-')
             {
-                while (char.IsDigit(currentCh))
+                NextCh();
+                LexKind = Tok.MINUS;
+            }
+            else if (currentCh == '*')
+            {
+                NextCh();
+                LexKind = Tok.MULT;
+            }
+            else if (currentCh == '>')
+            {
+                NextCh();
+                this.LexKind = Tok.GT;
+                if (currentCh == '=')
                 {
+                    this.LexKind = Tok.GEQ;
                     NextCh();
                 }
-                LexValue = Int32.Parse(LexText);
-                LexKind = Tok.INUM;
+            }
+            else if (currentCh == '<')
+            {
+                NextCh();
+                this.LexKind = Tok.LT;
+                if (currentCh == '=')
+                {
+                    this.LexKind = Tok.LEQ;
+                    NextCh();
+                } else if (currentCh == '>')
+                {
+                    this.LexKind = Tok.NEQ;
+                    NextCh();
+                }
+
+            }
+            else if (currentCh == '=')
+            {
+                this.LexKind = Tok.EQ;
+                NextCh();
+            }
+            else if (currentCh == '+')
+            {
+                NextCh();
+                this.LexKind = Tok.PLUS;
+                if (currentCh == '=')
+                {
+                    this.LexKind = Tok.PLUSASSIGN;
+                    NextCh();
+                }
             }
             else if ((int)currentCh == 0)
             {
