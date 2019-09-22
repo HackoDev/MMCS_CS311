@@ -170,15 +170,44 @@ namespace SimpleLexer
                 NextCh();
                 LexKind = Tok.SEMICOLON;
             }
+            else if (char.IsDigit(currentCh))
+            {
+                while (char.IsDigit(currentCh))
+                {
+                    NextCh();
+                }
+                LexKind = Tok.INUM;
+                LexValue = int.Parse(LexText);
+            }
             else if (currentCh == ':')
             {
                 NextCh();
-                if (currentCh != '=')
+                LexKind = Tok.COLON;
+                if (currentCh == '=')
                 {
-                    LexError("= was expected");
+                    LexKind = Tok.ASSIGN;
+                    NextCh();
                 }
+            }
+            else if (currentCh == '{')
+            {
                 NextCh();
-                LexKind = Tok.ASSIGN;
+                while (currentCh != '}' && (int)currentCh != 0)
+                {
+                    NextCh();
+                }
+
+                if ((int)currentCh == 0)
+                {
+                    LexError("Comment not closed");
+                }
+
+                if (currentCh == '}')
+                {
+                    NextCh();
+                }
+
+                NextLexem();
             }
             else if (char.IsLetter(currentCh))
             {
@@ -199,11 +228,54 @@ namespace SimpleLexer
             {
                 NextCh();
                 LexKind = Tok.MINUS;
+                if (currentCh == '=')
+                {
+                    this.LexKind = Tok.MINUSASSIGN;
+                    NextCh();
+                }
+            }
+            else if (currentCh == '/')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    this.LexKind = Tok.DIVASSIGN;
+                    NextCh();
+                }
+                else if (currentCh == '/')
+                {
+                    while (currentCh != '\n' && (int)currentCh != 0)
+                    {
+                        NextCh();
+                    }
+                    if (currentCh != '\n')
+                    {
+                        LexKind = Tok.EOF;
+                    }
+                    else
+                    {
+                        NextCh();
+                        NextLexem();
+                    }
+                } else
+                {
+                    LexKind = Tok.DIVISION;
+                }
+            }
+            else if (currentCh == ',')
+            {
+                NextCh();
+                LexKind = Tok.COMMA;
             }
             else if (currentCh == '*')
             {
                 NextCh();
                 LexKind = Tok.MULT;
+                if (currentCh == '=')
+                {
+                    this.LexKind = Tok.MULTASSIGN;
+                    NextCh();
+                }
             }
             else if (currentCh == '>')
             {
