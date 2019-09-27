@@ -8,6 +8,7 @@ INTNUM  {Digit}+
 REALNUM {INTNUM}\.{INTNUM}
 ID {Alpha}{AlphaDigit}* 
 COMMENT \/\/[^\r\n]* 
+LONGCOMMENT \{[^\}]*\}
 
 // Здесь можно делать описания типов, переменных и методов - они попадают в класс Scanner
 %{
@@ -24,6 +25,10 @@ COMMENT \/\/[^\r\n]*
 {REALNUM} { 
   LexValueDouble = double.Parse(yytext);
   return (int)Tok.RNUM;
+}
+
+{LONGCOMMENT} { 
+  return (int)Tok.LONGCOMMENT;
 }
 
 begin { 

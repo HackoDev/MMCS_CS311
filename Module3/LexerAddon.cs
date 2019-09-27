@@ -61,6 +61,9 @@ namespace  GeneratedLexer
                 {
 
                 }
+                else if (tok == (int)Tok.LONGCOMMENT)
+                {
+                }
                 else if (tok == (int)Tok.INUM)
                 {
                     sumInt += myScanner.LexValueInt;
