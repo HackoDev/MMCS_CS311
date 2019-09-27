@@ -7,6 +7,7 @@ AlphaDigit {Alpha}|{Digit}
 INTNUM  {Digit}+
 REALNUM {INTNUM}\.{INTNUM}
 ID {Alpha}{AlphaDigit}* 
+COMMENT \/\/[^\r\n]* 
 
 // Здесь можно делать описания типов, переменных и методов - они попадают в класс Scanner
 %{
@@ -39,6 +40,10 @@ cycle {
 
 {ID}  { 
   return (int)Tok.ID;
+}
+
+{COMMENT}  { 
+  return (int)Tok.COMMENT;
 }
 
 ":" { 

@@ -29,8 +29,11 @@ namespace GeneratedLexer
             int tok = 0;
             do {
                 tok = scanner.yylex();
-
-                if (tok == (int)Tok.EOF)
+                if (tok == (int)Tok.ID)
+                {
+                    
+                }
+                else if (tok == (int)Tok.EOF)
                 {
                     Console.WriteLine();
                     Console.WriteLine("number of id: {0:D}", cnt_id);
